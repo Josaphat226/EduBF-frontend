@@ -1,0 +1,135 @@
+@import "tailwindcss";
+@import '../styles/legacy.css';
+@import '../styles/legacy-admin.css';
+@import '../styles/sections.css';
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+/* ============================================================
+   TOKENS — thème clair (défaut)
+   ============================================================ */
+:root {
+  --primary: #2563EB;
+  --primary-light: #EFF6FF;
+  --accent: #F59E0B;
+  --accent-hover: #D97706;
+  --accent-soft: rgba(245, 158, 11, 0.08);
+
+  --bg: #FAFAFA;
+  --bg-card: #FFFFFF;
+  --bg-alt: #F4F4F5;
+  --text: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --border: #E2E8F0;
+  --border-light: #F1F5F9;
+
+  --shadow-1: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-2: 0 4px 8px rgba(15, 23, 42, 0.05), 0 16px 32px rgba(15, 23, 42, 0.08);
+  --shadow-btn: 0 4px 14px rgba(245, 158, 11, 0.25);
+  --shadow-btn-hover: 0 8px 24px rgba(245, 158, 11, 0.35);
+     
+    --nav-bg: transparent;
+  --nav-link: #475569;
+  --nav-link-hover: #0F172A;
+
+}
+
+
+/* ============================================================
+   TOKENS — thème sombre
+   ============================================================ */
+[data-theme="dark"] {
+  --bg: #0F172A;
+  --bg-card: #1E293B;
+  --bg-alt: #1E293B;
+  --text: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --border: #334155;
+  --border-light: #334155;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* { border-color: var(--border); }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  font-size: 15px;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+::selection { background: var(--accent-soft); color: var(--accent-hover); }
+
+/* ============================================================
+   TYPOGRAPHIE PREMIUM
+   ============================================================ */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text);
+}
+.display-hero { font-size: clamp(2.8rem, 5.5vw, 4.5rem); }
+.title-black { color: var(--text); }
+.title-orange { color: var(--accent); }
+
+.lead {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 48ch;
+}
+
+/* ============================================================
+   SECTIONS & CONTENEURS
+   ============================================================ */
+.section-edubf { padding: 6rem 0; position: relative; }
+@media (min-width: 768px) { .section-edubf { padding: 8rem 0; } }
+.container-edubf { max-width: 1140px; margin: 0 auto; padding: 0 1.5rem; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 3rem;
+  max-width: 50ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+@keyframes spin-slow {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+/* legacy.css et sections.css importés en tête de fichier ci-dessus, pour une fidélité pixel parfaite avec l'ancien design */
