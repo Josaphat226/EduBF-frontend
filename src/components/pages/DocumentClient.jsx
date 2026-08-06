@@ -6,7 +6,17 @@ import { useAuth } from '@/context/AuthContext'
 import { api } from '@/lib/api'
 import dynamic from 'next/dynamic'
 
-const PDFViewer = dynamic(() => import('@/components/pdf/PDFViewer'), { ssr: false })
+const PDFViewer = dynamic(() => import('@/components/pdf/PDFViewer'), {
+  ssr: false,
+  // Pendant que le code du lecteur PDF se télécharge, on affiche exactement
+  // le même message que pendant la récupération de l'URL du document —
+  // ça supprime le "trou" vide entre les deux étapes de chargement.
+  loading: () => (
+    <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)', background: '#1E293B', borderRadius: 14, marginBottom: '1.2rem' }}>
+      Chargement de l'aperçu...
+    </div>
+  ),
+})
 
 function slugType(type) {
   return type.toLowerCase().replace(/ \/ /g, '-').replace(/ /g, '-')
@@ -35,12 +45,34 @@ export default function DocumentClient({ id, initialData, introuvableInitial }) 
   // si l'utilisateur est connecté.
   useEffect(() => {
     if (!user || !document) return
+
+    let annule = false
+
+    // On lance le téléchargement du code du lecteur PDF (react-pdf) EN MÊME
+    // TEMPS que la récupération de l'URL du document, au lieu de l'un après
+    // l'autre. Next.js met le résultat en cache : quand le composant
+    // PDFViewer sera vraiment affiché plus bas, il n'aura souvent plus rien
+    // à télécharger, ce qui accélère nettement l'affichage.
+    import('@/components/pdf/PDFViewer')
+
     setChargementPdf(true)
     api.get(`/documents/${id}/lire`)
-      .then(res => setPdfUrl(res.data.url))
+      .then(res => {
+        if (!annule) setPdfUrl(res.data.url)
+      })
       .catch(() => {})
-      .finally(() => setChargementPdf(false))
+      .finally(() => {
+        if (!annule) setChargementPdf(false)
+      })
+
+    // Si le composant est démonté avant la fin de la requête (changement de
+    // page rapide, etc.), on ignore le résultat au lieu de mettre à jour un
+    // composant qui n'est plus affiché.
+    return () => {
+      annule = true
+    }
   }, [user, document, id])
+
 
   if (introuvable || !document) {
     return (
