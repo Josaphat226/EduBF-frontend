@@ -122,13 +122,26 @@ export default function DocumentClient({ id, initialData, introuvableInitial }) 
     }
   }
 
-  async function handleTelecharger(e) {
+async function handleTelecharger(e) {
     e.preventDefault()
     try {
       const res = await api.get(`/documents/${id}/telecharger`)
-      window.open(res.data.url, '_blank', 'noopener')
-    } catch {
-      // idem
+
+      // Déclenche le téléchargement sans ouvrir de nouvel onglet ni quitter
+      // la page : un lien invisible avec l'attribut "download", cliqué par
+      // le code, puis aussitôt retiré. Le backend force déjà le
+      // téléchargement (download: true côté Supabase), donc ça suffit.
+      // Attention : on utilise "window.document" et pas juste "document",
+      // parce que "document" tout seul, dans ce fichier, désigne l'état
+      // React du document (titre, id...) et pas la page du navigateur.
+      const lien = window.document.createElement('a')
+      lien.href = res.data.url
+      lien.download = ''
+      window.document.body.appendChild(lien)
+      lien.click()
+      window.document.body.removeChild(lien)
+    } catch (err) {
+      console.error('Erreur téléchargement:', err.message)
     }
   }
 
