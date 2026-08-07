@@ -96,7 +96,7 @@ export default function Login() {
             <Link href="/mot-de-passe-oublie" style={{ color: '#94A3B8', fontSize: '0.85rem' }}>Mot de passe oublié ?</Link>
           </p>
           <p className="auth-footer-text">
-            <a href="#">Conditions d'utilisation</a> · <a href="#">Confidentialité</a>
+            <a href="/conditions-utilisation">Conditions d'utilisation</a> · <a href="/confidentialite">Confidentialité</a>
           </p>
         </div>
 

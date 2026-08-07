@@ -133,3 +133,45 @@ body {
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 /* legacy.css et sections.css importés en tête de fichier ci-dessus, pour une fidélité pixel parfaite avec l'ancien design */
+
+
+/* ============================================================
+   PAGES LÉGALES (Conditions d'utilisation, Confidentialité)
+   ============================================================ */
+.legal-content h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 2.5rem 0 .75rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+.legal-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.legal-content p {
+  color: var(--text-secondary);
+  font-size: .98rem;
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+.legal-content ul {
+  margin: 0 0 1rem 1.25rem;
+  padding: 0;
+}
+.legal-content li {
+  color: var(--text-secondary);
+  font-size: .98rem;
+  line-height: 1.75;
+  margin-bottom: .4rem;
+}
+.legal-content a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.legal-content a:hover {
+  text-decoration: underline;
+}
