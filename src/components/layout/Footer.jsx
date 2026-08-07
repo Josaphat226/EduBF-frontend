@@ -1,6 +1,55 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
+import { api } from '@/lib/api'
+
+function FormulaireNewsletter() {
+  const [email, setEmail] = useState('')
+  const [statut, setStatut] = useState('repos') // repos | envoi | succes | erreur
+  const [messageErreur, setMessageErreur] = useState('')
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setStatut('envoi')
+    setMessageErreur('')
+    try {
+      await api.post('/newsletter/abonner', { email })
+      setStatut('succes')
+      setEmail('')
+    } catch (err) {
+      setStatut('erreur')
+      setMessageErreur(err.message)
+    }
+  }
+
+  if (statut === 'succes') {
+    return <p className="footer-newsletter-desc">Merci, tu es bien abonné(e) ! 🎉</p>
+  }
+
+  return (
+    <>
+      <form className="footer-newsletter" onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Ton adresse email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          disabled={statut === 'envoi'}
+        />
+        <button type="submit" disabled={statut === 'envoi'}>
+          {statut === 'envoi' ? '...' : "S'abonner"}
+        </button>
+      </form>
+      {statut === 'erreur' && (
+        <p role="alert" style={{ color: '#f87171', fontSize: '.85rem', marginTop: '.4rem' }}>
+          {messageErreur}
+        </p>
+      )}
+    </>
+  )
+}
 
 export default function Footer() {
   return (
@@ -61,18 +110,15 @@ export default function Footer() {
               </li>
               <li>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
-                contact@edubf.bf
+                contact@edubf.net
               </li>
             </ul>
           </div>
 
-          <div className="footer-col">
+        <div className="footer-col">
             <h4 className="footer-col-title">Rester informé</h4>
             <p className="footer-newsletter-desc">Reçois les nouvelles ressources directement.</p>
-            <form className="footer-newsletter" onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="Ton adresse email" />
-              <button type="submit">S'abonner</button>
-            </form>
+            <FormulaireNewsletter />
           </div>
 
         </div>
