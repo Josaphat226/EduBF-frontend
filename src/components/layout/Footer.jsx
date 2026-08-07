@@ -66,7 +66,7 @@ export default function Footer() {
               </div>
             </div>
             <div className="footer-social">
-              <a href="#" className="footer-soc">
+              <a href="https://www.facebook.com/share/18zPT5VxWb/?mibextid=wwXIfr" className="footer-soc">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
               </a>
               <a href="#" className="footer-soc">
@@ -128,7 +128,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="home-container footer-bottom-inner">
           <span>&copy; 2026 EduBF. Tous droits réservés.</span>
-          <span>Conçu pour les élèves du Burkina Faso</span>
+          <span>Conçu pour les élèves et étudiants du Burkina Faso</span>
         </div>
       </div>
     </footer>

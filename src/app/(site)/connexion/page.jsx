@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
@@ -100,7 +101,14 @@ export default function Login() {
         </div>
 
         <div className="auth-right">
-          <img src="/images/hero-student.png" alt="EduBF" className="auth-bg-img" />
+         <Image
+            src="/images/hero-student.png"
+            alt="EduBF"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 45vw"
+            className="auth-bg-img"
+          />
           <div className="auth-right-overlay"></div>
         </div>
       </div>

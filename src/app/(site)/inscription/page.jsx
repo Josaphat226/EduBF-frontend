@@ -1,30 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
-
-const NIVEAUX_DATA = {
-  college: {
-    classes: ['6ème', '5ème', '4ème', '3ème (BEPC)'],
-    filieres: [],
-  },
-  lycee: {
-    classes: ['Seconde', 'Première', 'Terminale'],
-    filieres: ['BAC A', 'BAC B', 'BAC C', 'BAC D', 'BAC E', 'BAC F1', 'BAC F2', 'BAC F3', 'BAC F4', 'BAC G1', 'BAC G2', 'BAC H'],
-  },
-  superieur: {
-    classes: ['1ère année', '2ème année', '3ème année', 'Licence', 'Master'],
-    filieres: [
-      'BTS Informatique de Gestion', 'BTS Comptabilité et Gestion', 'BTS Électrotechnique',
-      'BTS Génie Civil', 'BTS Commerce International', 'BTS Secrétariat de Direction',
-      'BTS Maintenance Industrielle', 'BTS Banque et Finance', 'BEP Électrotechnique',
-      'BEP Génie Civil', 'BEP Comptabilité', 'BEP Informatique', 'CAP Maçonnerie',
-      'CAP Menuiserie', 'CAP Électricité', 'CAP Commerce',
-    ],
-  },
-}
 
 export default function Register() {
   const { register } = useAuth()
@@ -34,14 +14,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     nom_complet: '', email: '', mot_de_passe: '',
-    niveau_scolaire: '', classe: '', filiere: '',
   })
-
-  const niveauInfo = form.niveau_scolaire ? NIVEAUX_DATA[form.niveau_scolaire] : null
-
-  function handleNiveauChange(niveau) {
-    setForm(f => ({ ...f, niveau_scolaire: niveau, classe: '', filiere: '' }))
-  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -114,47 +87,6 @@ export default function Register() {
                 </div>
               </div>
 
-              <div className="auth-form-group">
-                <label>Niveau scolaire *</label>
-                <select
-                  required
-                  value={form.niveau_scolaire}
-                  onChange={e => handleNiveauChange(e.target.value)}
-                >
-                  <option value="">-- Choisir ton niveau --</option>
-                  <option value="college">Collège</option>
-                  <option value="lycee">Lycée</option>
-                  <option value="superieur">Supérieur</option>
-                </select>
-              </div>
-
-              {niveauInfo && (
-                <div className="auth-form-group">
-                  <label>Classe *</label>
-                  <select
-                    required
-                    value={form.classe}
-                    onChange={e => setForm({ ...form, classe: e.target.value })}
-                  >
-                    <option value="">-- Choisir ta classe --</option>
-                    {niveauInfo.classes.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-              )}
-
-              {niveauInfo && niveauInfo.filieres.length > 0 && (
-                <div className="auth-form-group">
-                  <label>Filière / Série</label>
-                  <select
-                    value={form.filiere}
-                    onChange={e => setForm({ ...form, filiere: e.target.value })}
-                  >
-                    <option value="">-- Choisir ta filière --</option>
-                    {niveauInfo.filieres.map(f => <option key={f} value={f}>{f}</option>)}
-                  </select>
-                </div>
-              )}
-
               <button type="submit" className="auth-btn" disabled={loading}>
                 {loading ? 'Inscription...' : "S'inscrire gratuitement"}
               </button>
@@ -180,12 +112,19 @@ export default function Register() {
           </div>
 
           <p className="auth-footer-text">
-            <a href="#">Conditions d'utilisation</a> · <a href="#">Confidentialité</a>
+            <Link href="/conditions-utilisation">Conditions d'utilisation</Link> · <Link href="/confidentialite">Confidentialité</Link>
           </p>
         </div>
 
         <div className="auth-right">
-          <img src="/images/hero-student.png" alt="EduBF" className="auth-bg-img" />
+          <Image
+            src="/images/hero-student.png"
+            alt="EduBF"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 45vw"
+            className="auth-bg-img"
+          />
           <div className="auth-right-overlay"></div>
 
           <div className="auth-float-card auth-float-top">
