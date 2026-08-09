@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
 export default function Register() {
   const { register } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [showPassword, setShowPassword] = useState(false)
   const [erreur, setErreur] = useState('')
   const [loading, setLoading] = useState(false)
@@ -16,13 +17,16 @@ export default function Register() {
     nom_complet: '', email: '', mot_de_passe: '',
   })
 
+  const next = searchParams.get('next')
+  const destination = next && next.startsWith('/') ? next : '/'
+
   async function handleSubmit(e) {
     e.preventDefault()
     setErreur('')
     setLoading(true)
     try {
       await register(form.nom_complet, form.email, form.mot_de_passe)
-      router.push('/')
+      router.push(destination)
     } catch (err) {
       setErreur(err.message || 'Une erreur est survenue')
     } finally {
@@ -107,7 +111,7 @@ export default function Register() {
             </a>
 
             <p className="auth-switch">
-              Déjà un compte ? <Link href="/connexion">Se connecter</Link>
+              Déjà un compte ? <Link href={next ? `/connexion?next=${encodeURIComponent(next)}` : '/connexion'}>Se connecter</Link>
             </p>
           </div>
 

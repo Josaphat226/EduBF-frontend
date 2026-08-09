@@ -223,8 +223,8 @@ async function handleTelecharger(e) {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
               <p>Connecte-toi pour lire ou télécharger ce document.</p>
               <div className="doc-login-btns">
-                <Link href="/connexion" className="doc-btn-dl">Se connecter</Link>
-                <Link href="/inscription" className="doc-btn-outline">S'inscrire gratuitement</Link>
+                <Link href={`/connexion?next=/documents/${id}`} className="doc-btn-dl">Se connecter</Link>
+                <Link href={`/inscription?next=/documents/${id}`} className="doc-btn-outline">S'inscrire gratuitement</Link>
               </div>
             </div>
           )}
@@ -324,7 +324,7 @@ async function handleTelecharger(e) {
               </div>
             ) : (
               <p className="doc-login-comment">
-                <Link href="/connexion">Connecte-toi</Link> pour laisser un commentaire.
+                <Link href={`/connexion?next=/documents/${id}`}>Connecte-toi</Link> pour laisser un commentaire.
               </p>
             )}
           </div>
@@ -379,7 +379,7 @@ async function handleTelecharger(e) {
                 Télécharger le PDF
               </a>
             ) : (
-              <Link href="/connexion" className="doc-btn-dl" style={{ display: 'flex', justifyContent: 'center' }}>
+                  <Link href={`/connexion?next=/documents/${id}`} className="doc-btn-dl" style={{ display: 'flex', justifyContent: 'center' }}>
                 Se connecter pour accéder
               </Link>
             )}

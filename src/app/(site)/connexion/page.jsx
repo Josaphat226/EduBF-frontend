@@ -3,16 +3,22 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
 export default function Login() {
   const { login } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ email: '', mot_de_passe: '' })
   const [erreur, setErreur] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Adresse vers laquelle revenir après connexion (ex: ?next=/documents/12).
+  // On vérifie que ça commence par "/" pour ne jamais rediriger vers un site externe.
+  const next = searchParams.get('next')
+  const destination = next && next.startsWith('/') ? next : '/'
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -20,7 +26,7 @@ export default function Login() {
     setLoading(true)
     try {
       await login(form.email, form.mot_de_passe)
-      router.push('/')
+      router.push(destination)
     } catch (err) {
       setErreur(err.message || 'Une erreur est survenue')
     } finally {
@@ -77,7 +83,7 @@ export default function Login() {
           </form>
 
           <p className="auth-switch">
-            Pas encore de compte ? <Link href="/inscription">S'inscrire gratuitement</Link>
+            Pas encore de compte ? <Link href={next ? `/inscription?next=${encodeURIComponent(next)}` : '/inscription'}>S'inscrire gratuitement</Link>
           </p>
           <div className="auth-divider">
             <span>ou</span>
