@@ -68,10 +68,14 @@ export default function AdminDocuments() {
     charger()
   }
 
-  async function ouvrirApercu(doc) {
-    setApercu(doc)
+async function ouvrirApercu(doc) {
+  try {
+    const res = await api.get(`/admin/documents/${doc.id}/apercu`)
+    setApercu({ titre: res.data.titre, fichier_url: res.data.url })
+  } catch (err) {
+    console.error('Erreur aperçu:', err.message)
   }
-
+}
   if (!data) return null
   const { documents, pagination } = data
 
