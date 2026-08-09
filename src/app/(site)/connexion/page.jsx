@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
-export default function Login() {
+function LoginForm() {
   const { login } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -15,8 +15,6 @@ export default function Login() {
   const [erreur, setErreur] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Adresse vers laquelle revenir après connexion (ex: ?next=/documents/12).
-  // On vérifie que ça commence par "/" pour ne jamais rediriger vers un site externe.
   const next = searchParams.get('next')
   const destination = next && next.startsWith('/') ? next : '/'
 
@@ -119,5 +117,13 @@ export default function Login() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   )
 }
