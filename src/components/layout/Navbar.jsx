@@ -15,7 +15,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { user, logout, premium } = useAuth()
+  const { user, logout } = useAuth()
   const pathname = usePathname()
   const router = useRouter()
 
@@ -73,11 +73,6 @@ export default function Navbar() {
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
-                {premium.actif && (
-                  <span style={{ background: 'var(--accent)', color: '#fff', fontSize: '.65rem', fontWeight: 800, padding: '.1rem .45rem', borderRadius: 999, marginLeft: '.4rem' }}>
-                    PREMIUM
-                  </span>
-                )}
               </Link>
               <button type="button" onClick={handleLogout} className="home-btn-yellow" style={{ border: 'none', cursor: 'pointer' }}>Déconnexion</button>
             </>
@@ -107,7 +102,7 @@ export default function Navbar() {
         {user ? (
           <>
             <Link href="/mon-compte" onClick={() => setMenuOpen(false)}>
-              Mon compte {premium.actif && '⭐'}
+              Mon compte
             </Link>
             <Link
               href="/mes-favoris"
