@@ -82,6 +82,9 @@ export default function DocumentsClient() {
 
   const hasActiveTags = filtres.cycle || filtres.matiere || filtres.type_document
 
+const [filtresOuverts, setFiltresOuverts] = useState(false)
+  const nombreFiltresActifs = [filtres.cycle, filtres.matiere, filtres.type_document].filter(Boolean).length
+
   return (
     <>
       <div className="docs-hero">
@@ -101,8 +104,23 @@ export default function DocumentsClient() {
         <span className="docs-tab active">Tous les documents</span>
       </div>
 
-      <div className="docs-page-layout">
-        <aside className="docs-sidebar-new">
+    <div className="docs-page-layout">
+        <button
+          type="button"
+          className={`docs-filtres-toggle-btn ${filtresOuverts ? 'open' : ''}`}
+          onClick={() => setFiltresOuverts(o => !o)}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="4" y1="6" x2="20" y2="6" /><line x1="7" y1="12" x2="17" y2="12" /><line x1="10" y1="18" x2="14" y2="18" />
+          </svg>
+          Filtres
+          {nombreFiltresActifs > 0 && <span className="docs-filtres-toggle-badge">{nombreFiltresActifs}</span>}
+          <svg className="docs-filtres-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        <aside className={`docs-sidebar-new ${filtresOuverts ? 'docs-sidebar-mobile-open' : ''}`}>
           <div className="docs-sidebar-header">
             <span>Filtres</span>
             <button

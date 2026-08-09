@@ -4519,3 +4519,50 @@ body.no-navbar {
   color: #F59E0B !important;
   border-bottom-color: #F59E0B !important;
 }
+
+
+
+
+/* ===== FILTRES DOCUMENTS — bouton mobile (accordéon) ===== */
+.docs-filtres-toggle-btn { display: none; }
+.docs-filtres-toggle-badge {
+  background: #F59E0B;
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .05rem .45rem;
+  border-radius: 999px;
+}
+.docs-filtres-chevron { transition: transform .2s; margin-left: auto; }
+.docs-filtres-toggle-btn.open .docs-filtres-chevron { transform: rotate(180deg); }
+
+@media (max-width: 750px) {
+  .docs-filtres-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    padding: .7rem 1rem;
+    font-size: .9rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 1rem;
+    cursor: pointer;
+  }
+
+  .docs-sidebar-new { display: none; }
+  .docs-sidebar-new.docs-sidebar-mobile-open {
+    display: block;
+    width: 100%;
+    margin-bottom: 1.2rem;
+  }
+}
+
+[data-theme="dark"] .docs-filtres-toggle-btn {
+  background: var(--dm-card) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text) !important;
+}
