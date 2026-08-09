@@ -216,3 +216,10 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* Distinction visuelle du bouton Déconnexion dans le menu mobile : rouge,
+   pour ne pas se confondre avec les liens de navigation classiques. */
+.mobile-menu button.mobile-menu-link-btn.mobile-menu-logout,
+[data-theme="dark"] .mobile-menu button.mobile-menu-link-btn.mobile-menu-logout {
+  color: #DC2626 !important;
+}

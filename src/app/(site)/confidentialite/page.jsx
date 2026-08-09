@@ -40,37 +40,29 @@ export default function Confidentialite() {
       </ul>
       <p>Nous ne vendons ni ne partageons tes données à des fins publicitaires.</p>
 
-      <h2>3. Hébergement et sous-traitants</h2>
-      <p>
-        Tes données sont hébergées via Supabase (base de données et
-        documents) et le Service tourne sur les infrastructures de Render
-        (backend) et Vercel (frontend). Les emails automatiques (bienvenue,
-        réinitialisation de mot de passe) sont envoyés via Resend.
-      </p>
-
-      <h2>4. Durée de conservation</h2>
+      
+      <h2>3. Durée de conservation</h2>
       <p>
         Tes données sont conservées tant que ton compte est actif. Tu peux
         demander leur suppression à tout moment (voir section 6).
       </p>
 
-      <h2>5. Cookies</h2>
+      <h2>4. Cookies</h2>
       <p>
         EduBF utilise un cookie strictement nécessaire au fonctionnement du
         Service (maintien de ta session de connexion). Aucun cookie
         publicitaire ou de suivi tiers n'est utilisé.
       </p>
 
-      <h2>6. Tes droits</h2>
+      <h2>5. Tes droits</h2>
       <p>
         Conformément à la loi n°001-2021/AN, tu disposes d'un droit d'accès,
         de rectification, de suppression et d'opposition concernant tes
         données personnelles. Pour exercer ces droits, écris-nous à{' '}
-        <a href="mailto:contact@edubf.net">contact@edubf.net</a>. Tu peux
-        également saisir la CIL en cas de litige non résolu.
+        <a href="mailto:contact@edubf.net">contact@edubf.net</a>. 
       </p>
 
-      <h2>7. Contact</h2>
+      <h2>6. Contact</h2>
       <p>
         Pour toute question sur cette politique : <a href="mailto:contact@edubf.net">contact@edubf.net</a>.
       </p>
