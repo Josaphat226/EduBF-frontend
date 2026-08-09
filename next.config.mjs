@@ -1,6 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
-};
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://edubf.onrender.com/api/:path*',
+      },
+      {
+        source: '/auth/:path*',
+        destination: 'https://edubf.onrender.com/auth/:path*',
+      },
+    ]
+  },
+}
 
-export default nextConfig;
+module.exports = nextConfig
