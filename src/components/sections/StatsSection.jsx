@@ -31,7 +31,7 @@ export default function StatsSection({ totalDocs = 0 }) {
     { value: totalDocs, suffix: '+', label: 'Documents disponibles' },
     { value: 13, suffix: '', label: 'Régions couvertes' },
     { value: 18000, suffix: '+', label: 'Téléchargements' },
-    { value: 100, suffix: '%', label: 'Gratuit, sans limite' },
+    { value: 100, suffix: '%', label: 'Accessible partout' },
   ]
 
   return (
