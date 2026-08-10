@@ -2,7 +2,7 @@
 const nextConfig = {
   async rewrites() {
     return [
-      {
+ {
         source: '/api/:path*',
         destination: 'https://edubf.onrender.com/api/:path*',
       },

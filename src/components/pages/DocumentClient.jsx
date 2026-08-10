@@ -125,23 +125,35 @@ export default function DocumentClient({ id, initialData, introuvableInitial }) 
 async function handleTelecharger(e) {
     e.preventDefault()
     try {
-      const res = await api.get(`/documents/${id}/telecharger`)
+      // responseType: 'blob' — le backend renvoie maintenant directement les
+      // octets du PDF filigrané, plus une simple URL JSON.
+      const res = await api.get(`/documents/${id}/telecharger`, { responseType: 'blob' })
 
-      // Déclenche le téléchargement sans ouvrir de nouvel onglet ni quitter
-      // la page : un lien invisible avec l'attribut "download", cliqué par
-      // le code, puis aussitôt retiré. Le backend force déjà le
-      // téléchargement (download: true côté Supabase), donc ça suffit.
-      // Attention : on utilise "window.document" et pas juste "document",
-      // parce que "document" tout seul, dans ce fichier, désigne l'état
-      // React du document (titre, id...) et pas la page du navigateur.
+      // On crée une URL locale temporaire (uniquement valable dans cet
+      // onglet) à partir des octets reçus, pour déclencher le
+      // téléchargement sans ouvrir de nouvel onglet ni quitter la page.
+      const urlLocale = window.URL.createObjectURL(new Blob([res.data]))
       const lien = window.document.createElement('a')
-      lien.href = res.data.url
-      lien.download = ''
+      lien.href = urlLocale
+      lien.download = `${document.titre}.pdf`
       window.document.body.appendChild(lien)
       lien.click()
       window.document.body.removeChild(lien)
+      window.URL.revokeObjectURL(urlLocale)
     } catch (err) {
-      console.error('Erreur téléchargement:', err.message)
+      // Avec responseType: 'blob', le message d'erreur du serveur arrive
+      // sous forme de blob au lieu d'être lisible directement — on le
+      // décode nous-mêmes pour voir le vrai message.
+      if (err.response?.data instanceof Blob) {
+        const texte = await err.response.data.text()
+        try {
+          console.error('Erreur téléchargement:', JSON.parse(texte).error)
+        } catch {
+          console.error('Erreur téléchargement:', texte)
+        }
+      } else {
+        console.error('Erreur téléchargement:', err.message)
+      }
     }
   }
 
