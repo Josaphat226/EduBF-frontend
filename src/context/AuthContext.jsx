@@ -32,11 +32,12 @@ export function AuthProvider({ children }) {
     return response.data
   }
 
-  const register = async (nomComplet, email, motDePasse) => {
+ const register = async (nomComplet, email, motDePasse, turnstileToken) => {
     const response = await api.post('/auth/register', {
       nom_complet: nomComplet,
       email,
       mot_de_passe: motDePasse,
+      turnstileToken,
     })
     setUser(response.data.user)
     return response.data

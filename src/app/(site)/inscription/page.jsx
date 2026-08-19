@@ -1,8 +1,9 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import Script from 'next/script'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
@@ -17,25 +18,66 @@ function RegisterForm() {
     nom_complet: '', email: '', mot_de_passe: '',
   })
 
+
+const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileLoaded, setTurnstileLoaded] = useState(false)
+  const turnstileRef = useRef(null)
+
+  // Affiche le widget Turnstile dès que le script Cloudflare est chargé.
+// Affiche le widget Turnstile dès que le script Cloudflare est chargé.
+  useEffect(() => {
+    if (!turnstileLoaded || !window.turnstile || !turnstileRef.current) return
+
+    const widgetId = window.turnstile.render(turnstileRef.current, {
+      sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+      callback: (token) => setTurnstileToken(token),
+      'expired-callback': () => setTurnstileToken(''),
+    })
+
+    // Si cet effet est rejoué (changement de page, rafraîchissement du
+    // composant...), on retire proprement l'ancien widget avant d'en
+    // recréer un — sinon Cloudflare garde une référence vers un widget qui
+    // n'existe plus dans la page, et le jeton associé devient inutilisable.
+    return () => {
+      if (window.turnstile && widgetId) {
+        window.turnstile.remove(widgetId)
+      }
+    }
+  }, [turnstileLoaded])
+
   const next = searchParams.get('next')
   const destination = next && next.startsWith('/') ? next : '/'
 
-  async function handleSubmit(e) {
+async function handleSubmit(e) {
     e.preventDefault()
     setErreur('')
     setLoading(true)
     try {
-      await register(form.nom_complet, form.email, form.mot_de_passe)
+      await register(form.nom_complet, form.email, form.mot_de_passe, turnstileToken)
       router.push(destination)
     } catch (err) {
       setErreur(err.message || 'Une erreur est survenue')
+      // Un jeton Turnstile ne sert qu'une seule fois : si l'inscription
+      // échoue (mauvais email déjà pris, etc.), il faut le régénérer avant
+      // de pouvoir réessayer.
+      if (window.turnstile && turnstileRef.current) {
+        window.turnstile.reset(turnstileRef.current)
+      }
+      setTurnstileToken('')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="auth-page">
+    <>
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+        onLoad={() => setTurnstileLoaded(true)}
+      />
+      <div className="auth-page">
       <div className="auth-card">
         <div className="auth-left">
           <Link href="/" className="auth-logo">
@@ -91,7 +133,9 @@ function RegisterForm() {
                 </div>
               </div>
 
-              <button type="submit" className="auth-btn" disabled={loading}>
+             <div ref={turnstileRef} style={{ margin: '.5rem 0 1rem' }} />
+
+              <button type="submit" className="auth-btn" disabled={loading || !turnstileToken}>
                 {loading ? 'Inscription...' : "S'inscrire gratuitement"}
               </button>
             </form>
@@ -157,6 +201,7 @@ function RegisterForm() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
