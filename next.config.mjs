@@ -2,13 +2,13 @@
 const nextConfig = {
   async rewrites() {
     return [
-{
+      {
         source: '/api/:path*',
-        destination: 'http://localhost:3000/api/:path*',
+        destination: 'https://edubf.onrender.com/api/:path*',
       },
       {
         source: '/auth/:path*',
-        destination: 'http://localhost:3000/auth/:path*',
+        destination: 'https://edubf.onrender.com/auth/:path*',
       },
     ]
   },
