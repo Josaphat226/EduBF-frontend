@@ -66,6 +66,7 @@ export default function DocumentsClient() {
   const [typesDocument, setTypesDocument] = useState([])
   const [documents, setDocuments] = useState(null)
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 })
+    const [filtresMobileOuverts, setFiltresMobileOuverts] = useState(false)
 
   // Charge les 7 catégories une fois (utilisé pour la vue accueil ET pour retrouver
   // le nom de la catégorie active dans la vue liste)
@@ -216,9 +217,22 @@ export default function DocumentsClient() {
             </button>
             <span className="docs-tab active">{categorieActive ? categorieActive.nom : 'Recherche'}</span>
           </div>
+                    <button
+            type="button"
+            className={`docs-filtres-toggle-btn ${filtresMobileOuverts ? 'open' : ''}`}
+            onClick={() => setFiltresMobileOuverts(o => !o)}
+          >
+            Filtres
+            {[filtres.examen_id, filtres.serie_id, filtres.matiere_id, filtres.type_precis_id].filter(Boolean).length > 0 && (
+              <span className="docs-filtres-toggle-badge">
+                {[filtres.examen_id, filtres.serie_id, filtres.matiere_id, filtres.type_precis_id].filter(Boolean).length}
+              </span>
+            )}
+            <span className="docs-filtres-chevron">▾</span>
+          </button>
 
           <div className="docs-page-layout">
-            <aside className="docs-sidebar-new">
+            <aside className={`docs-sidebar-new ${filtresMobileOuverts ? 'docs-sidebar-mobile-open' : ''}`}>
               <div className="docs-sidebar-header">
                 <span>Filtres</span>
                 <button
