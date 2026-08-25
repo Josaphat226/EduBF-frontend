@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext'
 import { api } from '@/lib/api'
 
 function slugType(type) {
+  if (!type) return 'document'
   return type.toLowerCase().replace(/ \/ /g, '-').replace(/ /g, '-')
 }
 
