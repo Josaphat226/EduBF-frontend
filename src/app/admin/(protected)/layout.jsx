@@ -76,9 +76,29 @@ export default function AdminLayout({ children }) {
             Commentaires
             {badges.commentairesAttente > 0 && <span className="sidebar-badge danger">{badges.commentairesAttente}</span>}
           </Link>
-          <Link href="/admin/journal" className={`sidebar-link ${isActive('/admin/journal') ? 'active' : ''}`}>
+                    <Link href="/admin/journal" className={`sidebar-link ${isActive('/admin/journal') ? 'active' : ''}`}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14,2 14,8 20,8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10,9 9,9 8,9" /></svg>
             Journal
+          </Link>
+                    <Link href="/admin/campagnes" className={`sidebar-link ${isActive('/admin/campagnes') ? 'active' : ''}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
+            Campagnes e-mail
+          </Link>
+        </nav>
+
+        <div className="sidebar-section-label">CONCOURS</div>
+        <nav className="sidebar-nav">
+          <Link href="/admin/concours/import" className={`sidebar-link ${isActive('/admin/concours/import') ? 'active' : ''}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17,8 12,3 7,8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+            Importer des questions
+          </Link>
+          <Link href="/admin/concours/moderation" className={`sidebar-link ${isActive('/admin/concours/moderation') ? 'active' : ''}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>
+            Modération
+          </Link>
+          <Link href="/admin/concours/series" className={`sidebar-link ${isActive('/admin/concours/series') ? 'active' : ''}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>
+            Séries
           </Link>
         </nav>
 

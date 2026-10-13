@@ -75,7 +75,7 @@ async function handleSubmit(e) {
         src="https://challenges.cloudflare.com/turnstile/v0/api.js"
         async
         defer
-        onLoad={() => setTurnstileLoaded(true)}
+               onReady={() => setTurnstileLoaded(true)}
       />
       <div className="auth-page">
       <div className="auth-card">
@@ -134,6 +134,12 @@ async function handleSubmit(e) {
               </div>
 
              <div ref={turnstileRef} style={{ margin: '.5rem 0 1rem' }} />
+
+              {!turnstileToken && (
+                <p style={{ fontSize: '.8rem', color: 'var(--text-muted)', margin: '-.5rem 0 1rem' }}>
+                  Vérification de sécurité en cours… Si elle n'apparaît pas, recharge la page.
+                </p>
+              )}
 
               <button type="submit" className="auth-btn" disabled={loading || !turnstileToken}>
                 {loading ? 'Inscription...' : "S'inscrire gratuitement"}

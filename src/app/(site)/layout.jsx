@@ -3,6 +3,9 @@
 import { usePathname } from 'next/navigation'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import Analytics from '@/components/analytics/Analytics'
+import ConsentBanner from '@/components/analytics/ConsentBanner'
+import EnregistrerSW from '@/components/pwa/EnregistrerSW'
 
 export default function SiteLayout({ children }) {
   const pathname = usePathname()
@@ -22,15 +25,23 @@ export default function SiteLayout({ children }) {
           {children}
         </div>
         <Footer />
+        <Analytics />
+          <EnregistrerSW />
+        <ConsentBanner />
       </>
     )
   }
+
+  
 
   return (
     <>
       <Navbar />
       {children}
       <Footer />
+      <Analytics />
+        <EnregistrerSW />
+      <ConsentBanner />
     </>
   )
 }

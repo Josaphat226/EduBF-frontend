@@ -10,7 +10,6 @@ function slugType(type) {
   if (!type) return 'document'
   return type.toLowerCase().replace(/ \/ /g, '-').replace(/ /g, '-')
 }
-
 function Spinner({ texte }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', gap: '1rem' }}>

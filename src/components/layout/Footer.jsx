@@ -88,17 +88,21 @@ export default function Footer() {
               <li><Link href="/documents">Documents</Link></li>
               <li><Link href="/inscription">S'inscrire</Link></li>
               <li><Link href="/connexion">Se connecter</Link></li>
+              <button type="button" onClick={() => window.dispatchEvent(new Event('edubf-rouvrir-consentement'))} style={{ background: 'none', border: 'none', padding: 0, color: 'inherit', font: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}>
+  Gérer les cookies
+</button>
+              
             </ul>
           </div>
 
           <div className="footer-col">
             <h4 className="footer-col-title">Examens</h4>
             <ul className="footer-links">
-              <li><Link href="/documents?cycle=BEPC">BEPC</Link></li>
-              <li><Link href="/documents?cycle=BAC">BAC</Link></li>
-              <li><Link href="/documents?cycle=BEP">BEP</Link></li>
-              <li><Link href="/documents?cycle=CAP">CAP</Link></li>
-              <li><Link href="/documents?cycle=BTS">BTS</Link></li>
+                           <li><Link href="/documents?categorie_id=1&examen_id=7">BEPC</Link></li>
+              <li><Link href="/documents?categorie_id=1&examen_id=8">BAC</Link></li>
+              <li><Link href="/documents?categorie_id=1&examen_id=10">BEP</Link></li>
+              <li><Link href="/documents?categorie_id=1&examen_id=11">CAP</Link></li>
+              <li><Link href="/documents?categorie_id=1&examen_id=9">BTS</Link></li>
             </ul>
           </div>
 

@@ -17,6 +17,7 @@
   --accent: #F59E0B;
   --accent-hover: #D97706;
   --accent-soft: rgba(245, 158, 11, 0.08);
+    --primary-text: #2563EB;
 
   --bg: #FAFAFA;
   --bg-card: #FFFFFF;
@@ -48,9 +49,10 @@
   --bg-alt: #1E293B;
   --text: #F1F5F9;
   --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-muted: #8FA0B8;
   --border: #334155;
   --border-light: #334155;
+    --primary-text: #60A5FA;
 }
 
 /* ============================================================
@@ -168,7 +170,7 @@ body {
   margin-bottom: .4rem;
 }
 .legal-content a {
-  color: var(--primary);
+  color: 'var(--primary-text)';
   font-weight: 600;
   text-decoration: none;
 }

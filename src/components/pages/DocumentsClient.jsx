@@ -23,13 +23,13 @@ const ICONES_CATEGORIES = {
 }
 
 const TEINTES_CATEGORIES = {
-  'sujets-examen': { bg: 'rgba(37,99,235,0.08)', fg: '#2563EB' },
-  'cours': { bg: 'rgba(245,158,11,0.10)', fg: '#D97706' },
-  'exercices': { bg: 'rgba(16,185,129,0.10)', fg: '#059669' },
-  'td-tp': { bg: 'rgba(139,92,246,0.10)', fg: '#7C3AED' },
-  'corriges': { bg: 'rgba(236,72,153,0.09)', fg: '#DB2777' },
-  'livres-manuels': { bg: 'rgba(14,165,233,0.10)', fg: '#0284C7' },
-  'memoires-theses': { bg: 'rgba(234,88,12,0.10)', fg: '#EA580C' },
+  'sujets-examen': { bg: 'rgba(37,99,235,0.07)', fg: '#2563EB', accent: '#2563EB' },
+  'cours': { bg: 'rgba(245,158,11,0.09)', fg: '#D97706', accent: '#F59E0B' },
+  'exercices': { bg: 'rgba(16,185,129,0.08)', fg: '#059669', accent: '#10B981' },
+  'td-tp': { bg: 'rgba(139,92,246,0.08)', fg: '#7C3AED', accent: '#8B5CF6' },
+  'corriges': { bg: 'rgba(236,72,153,0.08)', fg: '#DB2777', accent: '#EC4899' },
+  'livres-manuels': { bg: 'rgba(14,165,233,0.08)', fg: '#0284C7', accent: '#0EA5E9' },
+  'memoires-theses': { bg: 'rgba(234,88,12,0.08)', fg: '#EA580C', accent: '#F97316' },
 }
 
 const cardContainer = {
@@ -86,7 +86,16 @@ export default function DocumentsClient() {
     if (estExamenLike) {
       api.get('/examens').then(res => setExamens(res.data.examens)).catch(() => setExamens([]))
     } else {
-      api.get('/matieres').then(res => setMatieres(res.data.matieres)).catch(() => setMatieres([]))
+            api.get('/matieres').then(res => {
+        const vues = new Set()
+        const uniques = res.data.matieres.filter(m => {
+          const cle = m.nom.trim().toLowerCase()
+          if (vues.has(cle)) return false
+          vues.add(cle)
+          return true
+        })
+        setMatieres(uniques)
+      }).catch(() => setMatieres([]))
     }
   }, [vueListe, filtres.categorie_id, estExamenLike])
 
@@ -143,9 +152,11 @@ export default function DocumentsClient() {
         </h1>
         <form onSubmit={handleSearchSubmit} className="docs-search-wrap">
           <input type="text" name="q" defaultValue={filtres.q} placeholder="Rechercher un cours, un sujet, une matière..." />
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
+                  <button type="submit" aria-label="Rechercher">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
         </form>
       </div>
 
@@ -163,9 +174,9 @@ export default function DocumentsClient() {
               animate="show"
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '1.25rem' }}
             >
-              {categories.map(cat => {
+                            {categories.map(cat => {
                 const Icone = ICONES_CATEGORIES[cat.slug] || DocumentTextIcon
-                const teinte = TEINTES_CATEGORIES[cat.slug] || { bg: 'var(--bg-alt)', fg: 'var(--text-secondary)' }
+                const teinte = TEINTES_CATEGORIES[cat.slug] || { bg: 'var(--bg-alt)', fg: 'var(--text-secondary)', accent: 'var(--text-secondary)' }
                 return (
                   <motion.button
                     key={cat.id}
@@ -174,29 +185,34 @@ export default function DocumentsClient() {
                     whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
                     whileTap={{ scale: 0.98 }}
                     style={{
+                      position: 'relative', overflow: 'hidden',
                       display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '.9rem',
-                      padding: '1.8rem 1.6rem', borderRadius: 20, background: 'var(--bg-card)',
-                      border: '1px solid var(--border)', textAlign: 'left', cursor: 'pointer',
+                      padding: '1.8rem 1.6rem', borderRadius: 20, background: teinte.bg,
+                      border: `1.5px solid ${teinte.accent}33`, textAlign: 'left', cursor: 'pointer',
                       boxShadow: '0 1px 2px rgba(15,23,42,0.04)',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 20px 40px -12px rgba(15,23,42,0.14)'; e.currentTarget.style.borderColor = 'transparent' }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.04)'; e.currentTarget.style.borderColor = 'var(--border)' }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 20px 40px -14px ${teinte.accent}66`; e.currentTarget.style.borderColor = teinte.accent }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.04)'; e.currentTarget.style.borderColor = `${teinte.accent}33` }}
                   >
+                    {/* Barre d'accent colorée en haut de la carte */}
+                  
+
                     <motion.span
                       whileHover={{ scale: 1.08, rotate: 3 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                       style={{
-                        width: 52, height: 52, borderRadius: 15, background: teinte.bg, color: teinte.fg,
+                        width: 54, height: 54, borderRadius: 15, background: teinte.accent, color: '#fff',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: `0 6px 16px -4px ${teinte.accent}88`,
                       }}
                     >
-                      <Icone size={26} strokeWidth={1.6} />
+                      <Icone size={27} strokeWidth={1.8} />
                     </motion.span>
                     <div>
                       <div style={{ fontSize: '1.02rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.01em' }}>
                         {cat.nom}
                       </div>
-                      <div style={{ fontSize: '.78rem', color: 'var(--text-secondary)', marginTop: '.25rem' }}>
+                      <div style={{ fontSize: '.78rem', fontWeight: 600, color: teinte.accent, marginTop: '.3rem' }}>
                         {cat.nb_documents} document{cat.nb_documents > 1 ? 's' : ''}
                       </div>
                     </div>
@@ -217,22 +233,29 @@ export default function DocumentsClient() {
             </button>
             <span className="docs-tab active">{categorieActive ? categorieActive.nom : 'Recherche'}</span>
           </div>
-                    <button
+                              <button
             type="button"
             className={`docs-filtres-toggle-btn ${filtresMobileOuverts ? 'open' : ''}`}
             onClick={() => setFiltresMobileOuverts(o => !o)}
+            aria-expanded={filtresMobileOuverts}
+            aria-controls="docs-filtres-panel"
           >
-            Filtres
+            <svg className="docs-filtres-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+              <line x1="4" y1="6" x2="20" y2="6" /><line x1="7" y1="12" x2="17" y2="12" /><line x1="10" y1="18" x2="14" y2="18" />
+            </svg>
+            <span className="docs-filtres-toggle-label">Filtres</span>
             {[filtres.examen_id, filtres.serie_id, filtres.matiere_id, filtres.type_precis_id].filter(Boolean).length > 0 && (
               <span className="docs-filtres-toggle-badge">
                 {[filtres.examen_id, filtres.serie_id, filtres.matiere_id, filtres.type_precis_id].filter(Boolean).length}
               </span>
             )}
-            <span className="docs-filtres-chevron">▾</span>
+            <svg className="docs-filtres-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </button>
 
           <div className="docs-page-layout">
-            <aside className={`docs-sidebar-new ${filtresMobileOuverts ? 'docs-sidebar-mobile-open' : ''}`}>
+                      <aside id="docs-filtres-panel" className={`docs-sidebar-new ${filtresMobileOuverts ? 'docs-sidebar-mobile-open' : ''}`}>
               <div className="docs-sidebar-header">
                 <span>Filtres</span>
                 <button

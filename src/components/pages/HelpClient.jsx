@@ -18,12 +18,25 @@ const ARTICLES_PROBLEMES = [
   { cat: 'Connexion', question: "J'ai oublié mon mot de passe, que faire ?", reponse: "Clique sur 'Mot de passe oublié' sur la page de connexion. Saisis ton email, tu recevras un lien pour réinitialiser ton mot de passe." },
   { cat: 'Connexion', question: 'Mon compte est suspendu, pourquoi ?', reponse: "Un compte peut être suspendu en cas de non-respect des conditions d'utilisation. Contacte-nous via le formulaire pour plus d'informations." },
   { cat: 'Téléchargement', question: "Je n'arrive pas à télécharger un document.", reponse: 'Vérifie ta connexion internet, vide le cache de ton navigateur, ou essaye avec un autre navigateur. Si le problème persiste, contacte-nous.' },
-  { cat: 'Téléchargement', question: "J'ai atteint ma limite de téléchargements.", reponse: "EduBF n'impose pas de limite de téléchargement. Si tu rencontres un message de limite, contacte rapidement notre support." },
+   { cat: 'Téléchargement', question: "J'ai atteint ma limite de téléchargements.", reponse: "Pour protéger la plateforme contre les téléchargements automatisés, le nombre de téléchargements est limité par heure pour chaque compte. Si tu atteins cette limite, patiente environ une heure puis réessaie. Si le message apparaît alors que tu as peu téléchargé, contacte-nous via le formulaire." },
   { cat: 'Documents', question: 'Un document est illisible ou corrompu.', reponse: "Essaie de télécharger à nouveau le document. Si le problème continue, signale-le via le bouton 'Signaler' sur la page du document." },
   { cat: 'Documents', question: 'Je ne trouve pas le document que je cherche.', reponse: "Essaie avec d'autres mots-clés dans la recherche, ou utilise les filtres. Tu peux aussi faire une demande via notre formulaire de contact." },
   { cat: 'Commentaires', question: "Mon commentaire n'apparaît pas, pourquoi ?", reponse: 'Les commentaires peuvent être vérifiés avant publication pour éviter les abus. Attends quelques minutes ou contacte-nous si le problème persiste.' },
   { cat: 'Compte', question: 'Comment supprimer mon compte ?', reponse: "Va dans 'Mon compte' > 'Paramètres' > 'Supprimer mon compte'. Cette action est irréversible, tous tes documents seront supprimés." },
   { cat: 'Signalement', question: 'Comment signaler un document incorrect ?', reponse: "Sur la page du document, clique sur 'Signaler', choisis la raison et envoie. Notre équipe examinera rapidement le signalement." },
+]
+
+
+const ARTICLES_CONCOURS = [
+  { cat: 'Découvrir', question: 'À quoi sert la section QCM ?', reponse: "La section QCM te permet de t'entraîner avec des questions à choix multiples, classées par domaine. Tu choisis un domaine, tu fais une série ou un entraînement, puis tu découvres ta correction et ton score. Il faut être connecté pour t'entraîner." },
+  { cat: 'Séries', question: 'Comment faire une série de questions ?', reponse: "Va dans QCM, choisis un domaine, puis clique sur « Commencer » à côté de la série de ton choix. Les questions s'affichent une par une : sélectionne ta réponse, puis clique sur « Suivant ». À la dernière question, le bouton devient « Terminer »." },
+  { cat: 'Séries', question: "Que signifie « Déjà fait » à côté d'une série ?", reponse: "Ce badge vert indique que tu as déjà terminé cette série au moins une fois. Ton meilleur score s'affiche juste en dessous. Une série commencée mais non terminée n'est pas marquée « Déjà fait »." },
+  { cat: 'Séries', question: 'Puis-je refaire une série déjà faite ?', reponse: "Oui, autant de fois que tu veux, avec le bouton « Commencer ». Chaque tentative est enregistrée dans « Mes sessions », et la série affiche ton meilleur score." },
+  { cat: 'Entraînement', question: 'Comment faire un entraînement personnalisé ?', reponse: "Dans la section QCM, clique sur « Entraînement personnalisé ». Choisis un ou plusieurs domaines, une difficulté (ou toutes) et le nombre de questions : 10, 15, 20, 30 ou 40. EduBF tire alors des questions au hasard parmi celles qui sont publiées. Sur la page d'un domaine, le bouton « Démarrer » lance directement 20 questions de ce domaine." },
+  { cat: 'Résultats', question: 'Comment est calculé mon score ?', reponse: "Chaque bonne réponse rapporte 1 point. À la fin, tu vois ton score sur le nombre total de questions, ainsi qu'un pourcentage. Une question sans réponse ne rapporte aucun point." },
+  { cat: 'Résultats', question: 'Où voir la correction des questions ?', reponse: "À la fin d'une session, la page Résultat affiche chaque question avec la mention « Correct » ou « Incorrect », la bonne réponse et, quand elle existe, une explication. Tu peux la revoir à tout moment depuis « Mes sessions »." },
+  { cat: 'Historique', question: 'Où retrouver mes sessions précédentes ?', reponse: "Clique sur « Mes sessions » dans la section QCM. Tu y vois tes séries et entraînements avec leur date, le nombre de questions et ton score. Clique sur une session terminée pour revoir sa correction." },
+  { cat: 'Historique', question: "Que faire si j'ai quitté une session avant la fin ?", reponse: "Elle apparaît dans « Mes sessions » avec la mention « En cours — reprendre ». Clique dessus : tu reprends à la première question à laquelle tu n'as pas encore répondu." },
 ]
 
 export default function HelpClient() {
@@ -39,7 +52,7 @@ export default function HelpClient() {
     return () => document.removeEventListener('keydown', handleEsc)
   }, [])
 
-  const articles = tab === 'debuter' ? ARTICLES_DEBUTER : ARTICLES_PROBLEMES
+    const articles = tab === 'debuter' ? ARTICLES_DEBUTER : tab === 'concours' ? ARTICLES_CONCOURS : ARTICLES_PROBLEMES
   const term = search.toLowerCase().trim()
   const filtres = term
     ? articles.filter(a =>
@@ -87,7 +100,14 @@ export default function HelpClient() {
           href="#"
           onClick={e => { e.preventDefault(); setTab('problemes'); setSearch('') }}
         >
-          Problèmes &amp; Questions
+               Problèmes &amp; Questions
+        </a>
+        <a
+          className={`aide-tab ${tab === 'concours' ? 'active' : ''}`}
+          href="#"
+          onClick={e => { e.preventDefault(); setTab('concours'); setSearch('') }}
+        >
+          QCM
         </a>
       </div>
 
