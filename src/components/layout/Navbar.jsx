@@ -9,7 +9,7 @@ import ThemeToggle from './ThemeToggle'
 const navLinks = [
   { href: '/', label: 'Accueil' },
   { href: '/documents', label: 'Documents' },
-  { href: '/concours', label: 'Concours' },
+  { href: '/concours', label: 'QCM' },
   { href: '/aide', label: 'Aide' },
   { href: '/contact', label: 'Contact' },
 ]
