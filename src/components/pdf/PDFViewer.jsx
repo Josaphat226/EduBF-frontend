@@ -23,6 +23,15 @@ export default function PDFViewer({ url, title, onClose, embedded = false }) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
+    const [visible, setVisible] = useState(() => new Set([1, 2]))
+  const [ratios, setRatios] = useState({})
+  const [baseRatio, setBaseRatio] = useState(1.414)
+  const slotRefs = useRef([])
+  const rafRef = useRef(0)
+  const ignorerScrollJusqua = useRef(0)
+  const pageRef = useRef(1)
+  const premierRendu = useRef(true)
+
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [searchIndex, setSearchIndex] = useState(0)
@@ -60,23 +69,78 @@ export default function PDFViewer({ url, title, onClose, embedded = false }) {
     }
   }, [isFullscreenMode])
 
-  function onDocumentLoadSuccess(pdf) {
+    function onDocumentLoadSuccess(pdf) {
     pdfProxyRef.current = pdf
     setNumPages(pdf.numPages)
     setProgress(100)
+    pdf.getPage(1).then(p => {
+      const v = p.getViewport({ scale: 1 })
+      setBaseRatio(v.height / v.width)
+    }).catch(() => {})
   }
-
   function onDocumentLoadProgress({ loaded, total }) {
     if (total) setProgress(Math.round((loaded / total) * 100))
   }
 
   useEffect(() => { setPageInputValue(String(pageNumber)) }, [pageNumber])
 
+    const MARGE_HAUT = 8
+
+  function scrollToPage(n) {
+    const root = viewerAreaRef.current
+    const el = slotRefs.current[n]
+    if (!root || !el) return
+    ignorerScrollJusqua.current = Date.now() + 250
+    root.scrollTo({ top: Math.max(0, el.offsetTop - MARGE_HAUT), behavior: 'auto' })
+  }
+
   function goToPage(n) {
     const clamped = Math.min(Math.max(1, n), numPages || 1)
     setPageNumber(clamped)
+    pageRef.current = clamped
     setShowThumbnails(false)
+    requestAnimationFrame(() => scrollToPage(clamped))
   }
+
+  // Met à jour le numéro de page pendant le défilement
+  function onScroll() {
+    if (rafRef.current) return
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0
+      if (Date.now() < ignorerScrollJusqua.current) return
+      const root = viewerAreaRef.current
+      if (!root || !numPages) return
+      const seuil = root.getBoundingClientRect().top + root.clientHeight * 0.35
+      let courante = 1
+      for (let n = 1; n <= numPages; n++) {
+        const el = slotRefs.current[n]
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= seuil) courante = n
+        else break
+      }
+      pageRef.current = courante
+      setPageNumber(courante)
+    })
+  }
+
+  // Ne dessine que les pages proches de l'écran (économise la mémoire)
+  useEffect(() => {
+    const root = viewerAreaRef.current
+    if (!root || !numPages) return
+    const io = new IntersectionObserver((entries) => {
+      setVisible(prev => {
+        const next = new Set(prev)
+        for (const e of entries) {
+          const n = Number(e.target.dataset.page)
+          if (e.isIntersecting) next.add(n)
+          else next.delete(n)
+        }
+        return next
+      })
+    }, { root, rootMargin: '1500px 0px' })
+    slotRefs.current.forEach(el => { if (el) io.observe(el) })
+    return () => io.disconnect()
+  }, [numPages])
 
   function handlePageInputSubmit(e) {
     e.preventDefault()
@@ -125,6 +189,14 @@ export default function PDFViewer({ url, title, onClose, embedded = false }) {
 
   const margin = isMobile ? 16 : 48
   const pageWidth = Math.max(160, (areaWidth - margin) * zoom)
+    const hauteurPage = (n) => Math.round(pageWidth * (ratios[n] || baseRatio))
+
+  // Si la largeur change (zoom, miniatures, rotation), on reste sur la page courante
+  useEffect(() => {
+    if (premierRendu.current) { premierRendu.current = false; return }
+    scrollToPage(pageRef.current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageWidth])
 
   return (
     <div
@@ -134,8 +206,10 @@ export default function PDFViewer({ url, title, onClose, embedded = false }) {
         position: 'fixed', inset: 0, zIndex: 1000,
         display: 'flex', flexDirection: 'column',
         background: '#1E293B',
-      } : {
-        position: 'relative', width: '100%', height: isMobile ? '75vh' : '650px',
+        } : {
+        position: 'relative', width: '100%', maxWidth: '100%', minWidth: 0,
+        contain: 'inline-size',
+        height: isMobile ? '75vh' : '650px',
         display: 'flex', flexDirection: 'column',
         background: '#1E293B', borderRadius: 14, overflow: 'hidden',
       }}
@@ -214,7 +288,7 @@ export default function PDFViewer({ url, title, onClose, embedded = false }) {
                 {isFullscreenMode ? '⤡' : '⤢'}
               </button>
             )}
-            <a href={url} download style={{ ...btnStyle, textDecoration: 'none', display: 'inline-block' }} className="pdfv-btn" title="Télécharger">⬇</a>
+           
             {onClose && (
               <button onClick={onClose} style={{ ...btnStyle, background: '#EF4444' }} className="pdfv-btn" title="Fermer">✕</button>
             )}
@@ -258,10 +332,11 @@ export default function PDFViewer({ url, title, onClose, embedded = false }) {
           </div>
         )}
 
-        <div
+                <div
           ref={viewerAreaRef}
+          onScroll={onScroll}
           className="pdfv-page-doc"
-          style={{ flex: 1, minWidth: 0, overflow: 'auto', display: 'flex', justifyContent: 'center', padding: isMobile ? '0.5rem' : '1.5rem' }}
+          style={{ flex: 1, minWidth: 0, overflow: 'auto', position: 'relative', padding: isMobile ? '0.5rem' : '1.5rem' }}
         >
           <Document
             file={url}
@@ -270,7 +345,27 @@ export default function PDFViewer({ url, title, onClose, embedded = false }) {
             loading={<div style={{ color: '#94A3B8', paddingTop: '3rem' }}>Chargement du document...</div>}
             error={<div style={{ color: '#F87171', paddingTop: '3rem' }}>Impossible de charger ce PDF.</div>}
           >
-            <Page pageNumber={pageNumber} width={pageWidth} />
+            {Array.from({ length: numPages || 0 }, (_, i) => i + 1).map(n => (
+              <div
+                key={n}
+                ref={el => { slotRefs.current[n] = el }}
+                data-page={n}
+                style={{ width: pageWidth, height: hauteurPage(n), margin: '0 auto 12px', background: 'rgba(255,255,255,0.04)', borderRadius: 4 }}
+              >
+                {visible.has(n) && (
+                  <Page
+                    pageNumber={n}
+                    width={pageWidth}
+                    loading=""
+                    onLoadSuccess={(p) => {
+                      const r = p.originalHeight / p.originalWidth
+                      if (!isFinite(r)) return
+                      setRatios(prev => (prev[n] ? prev : { ...prev, [n]: r }))
+                    }}
+                  />
+                )}
+              </div>
+            ))}
           </Document>
         </div>
       </div>

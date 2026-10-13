@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { api } from '@/lib/api'
 import dynamic from 'next/dynamic'
+import DownloadModal from '@/components/ui/DownloadModal'
 
 const PDFViewer = dynamic(() => import('@/components/pdf/PDFViewer'), {
   ssr: false,
@@ -19,7 +20,7 @@ const PDFViewer = dynamic(() => import('@/components/pdf/PDFViewer'), {
 })
 
 function slugType(type) {
-  return type.toLowerCase().replace(/ \/ /g, '-').replace(/ /g, '-')
+  return (type || '').toLowerCase().replace(/ \/ /g, '-').replace(/ /g, '-')
 }
 
 export default function DocumentClient({ id, initialData, introuvableInitial }) {
@@ -122,57 +123,82 @@ export default function DocumentClient({ id, initialData, introuvableInitial }) 
     }
   }
 
-async function handleTelecharger(e) {
-    e.preventDefault()
-    try {
-      // responseType: 'blob' — le backend renvoie maintenant directement les
-      // octets du PDF filigrané, plus une simple URL JSON.
-      const res = await api.get(`/documents/${id}/telecharger`, { responseType: 'blob' })
+    const [telechargementEnCours, setTelechargementEnCours] = useState(false)
+  const [dlEtat, setDlEtat] = useState('idle') // idle | preparation | telechargement | termine | erreur
+  const [dlPourcentage, setDlPourcentage] = useState(null)
+  const [dlMessage, setDlMessage] = useState('')
+  const dlControleur = useRef(null)
 
-      // On crée une URL locale temporaire (uniquement valable dans cet
-      // onglet) à partir des octets reçus, pour déclencher le
-      // téléchargement sans ouvrir de nouvel onglet ni quitter la page.
-      const urlLocale = window.URL.createObjectURL(new Blob([res.data]))
+  function fermerDl() {
+    setDlEtat('idle')
+    setDlPourcentage(null)
+    setDlMessage('')
+  }
+
+  function annulerDl() {
+    dlControleur.current?.abort()
+  }
+
+  async function handleTelecharger(e) {
+    e.preventDefault()
+    if (telechargementEnCours) return
+    setTelechargementEnCours(true)
+    setDlEtat('preparation')
+    setDlPourcentage(null)
+    dlControleur.current = new AbortController()
+
+    try {
+      const res = await api.get(`/documents/${id}/telecharger`, {
+        responseType: 'blob',
+        signal: dlControleur.current.signal,
+        onDownloadProgress: (evt) => {
+          setDlEtat('telechargement')
+          if (evt.total) setDlPourcentage(Math.min(100, Math.round((evt.loaded / evt.total) * 100)))
+        },
+      })
+
+      // URL locale temporaire : déclenche le téléchargement sans ouvrir d'onglet
+      const urlLocale = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
       const lien = window.document.createElement('a')
       lien.href = urlLocale
       lien.download = `${document.titre}.pdf`
       window.document.body.appendChild(lien)
       lien.click()
       window.document.body.removeChild(lien)
-      window.URL.revokeObjectURL(urlLocale)
+      setTimeout(() => window.URL.revokeObjectURL(urlLocale), 1000)
+
+      setDlPourcentage(100)
+      setDlEtat('termine')
+      setTimeout(fermerDl, 1800)
     } catch (err) {
-      // Avec responseType: 'blob', le message d'erreur du serveur arrive
-      // sous forme de blob au lieu d'être lisible directement — on le
-      // décode nous-mêmes pour voir le vrai message.
-      if (err.response?.data instanceof Blob) {
-        const texte = await err.response.data.text()
-        try {
-          console.error('Erreur téléchargement:', JSON.parse(texte).error)
-        } catch {
-          console.error('Erreur téléchargement:', texte)
-        }
+      if (err.code === 'ERR_CANCELED') {
+        fermerDl()
       } else {
-        console.error('Erreur téléchargement:', err.message)
+               setDlMessage((err.message || 'Une erreur est survenue.') + (err.status ? ` (code ${err.status})` : ''))
+        setDlEtat('erreur')
       }
+    } finally {
+      setTelechargementEnCours(false)
     }
   }
 
-  return (
+    return (
     <div className="doc-page-wrapper">
+      <DownloadModal etat={dlEtat} pourcentage={dlPourcentage} message={dlMessage} onAnnuler={annulerDl} onFermer={fermerDl} />
       <div className="doc-hero">
         <div className="doc-blob-l"></div>
         <div className="doc-blob-r"></div>
         <div className="doc-hero-inner">
-          <Link href="/documents" className="doc-back">
+                 <Link href="/documents" className="doc-back doc-back-pill">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15,18 9,12 15,6" /></svg>
             Retour aux documents
           </Link>
           <div className="doc-hero-type">{document.type_document}</div>
           <h1 className="doc-hero-title">{document.titre}</h1>
           <div className="doc-hero-tags">
-            <span className="doc-htag">{document.cycle}</span>
+                  {document.cycle && <span className="doc-htag">{document.cycle}</span>}
             {document.serie_filiere && <span className="doc-htag">{document.serie_filiere}</span>}
-            <span className="doc-htag">{document.matiere}</span>
+            {document.matiere && <span className="doc-htag">{document.matiere}</span>}
             {document.annee_scolaire && <span className="doc-htag doc-htag-year">{document.annee_scolaire}</span>}
           </div>
         </div>
@@ -225,9 +251,9 @@ async function handleTelecharger(e) {
                 </svg>
                 <span>{estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'}</span>
               </button>
-              <a href="#" className="doc-btn-dl" onClick={handleTelecharger}>
+                          <a href="#" className="doc-btn-dl" onClick={handleTelecharger} style={telechargementEnCours ? { pointerEvents: 'none', opacity: 0.7 } : undefined}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7,10 12,15 17,10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                Télécharger le PDF
+                {telechargementEnCours ? 'Préparation du fichier...' : 'Télécharger le PDF'}
               </a>
             </div>
           ) : (
@@ -235,8 +261,8 @@ async function handleTelecharger(e) {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
               <p>Connecte-toi pour lire ou télécharger ce document.</p>
               <div className="doc-login-btns">
-                <Link href={`/connexion?next=/documents/${id}`} className="doc-btn-dl">Se connecter</Link>
-                <Link href={`/inscription?next=/documents/${id}`} className="doc-btn-outline">S'inscrire gratuitement</Link>
+                <Link rel="nofollow" href={`/connexion?next=/documents/${id}`} className="doc-btn-dl">Se connecter</Link>
+                <Link rel="nofollow" href={`/inscription?next=/documents/${id}`} className="doc-btn-outline">S'inscrire gratuitement</Link>
               </div>
             </div>
           )}
@@ -336,7 +362,7 @@ async function handleTelecharger(e) {
               </div>
             ) : (
               <p className="doc-login-comment">
-                <Link href={`/connexion?next=/documents/${id}`}>Connecte-toi</Link> pour laisser un commentaire.
+                <Link  rel="nofollow" href={`/connexion?next=/documents/${id}`}>Connecte-toi</Link> pour laisser un commentaire.
               </p>
             )}
           </div>
@@ -346,24 +372,30 @@ async function handleTelecharger(e) {
           <div className="doc-info-card">
             <div className="doc-info-title">Informations</div>
             <div className="doc-info-list">
-              <div className="doc-info-item">
-                <span className="doc-info-label">Type</span>
-                <span className="doc-info-val">{document.type_document}</span>
-              </div>
-              <div className="doc-info-item">
-                <span className="doc-info-label">Cycle</span>
-                <span className="doc-info-val">{document.cycle}</span>
-              </div>
+                         {document.type_document && (
+                <div className="doc-info-item">
+                  <span className="doc-info-label">Type</span>
+                  <span className="doc-info-val">{document.type_document}</span>
+                </div>
+              )}
+              {document.cycle && (
+                <div className="doc-info-item">
+                  <span className="doc-info-label">Cycle</span>
+                  <span className="doc-info-val">{document.cycle}</span>
+                </div>
+              )}
               {document.serie_filiere && (
                 <div className="doc-info-item">
                   <span className="doc-info-label">Filière</span>
                   <span className="doc-info-val">{document.serie_filiere}</span>
                 </div>
               )}
-              <div className="doc-info-item">
-                <span className="doc-info-label">Matière</span>
-                <span className="doc-info-val">{document.matiere}</span>
-              </div>
+                           {document.matiere && (
+                <div className="doc-info-item">
+                  <span className="doc-info-label">Matière</span>
+                  <span className="doc-info-val">{document.matiere}</span>
+                </div>
+              )}
               {document.annee_scolaire && (
                 <div className="doc-info-item">
                   <span className="doc-info-label">Année</span>
@@ -386,12 +418,12 @@ async function handleTelecharger(e) {
 
           <div className="doc-aside-actions">
             {user ? (
-              <a href="#" className="doc-btn-dl" style={{ display: 'flex', justifyContent: 'center' }} onClick={handleTelecharger}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7,10 12,15 17,10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                Télécharger le PDF
+                           <a href="#" className="doc-btn-dl" onClick={handleTelecharger} style={telechargementEnCours ? { pointerEvents: 'none', opacity: 0.7 } : undefined}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7,10 12,15 17,10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                {telechargementEnCours ? 'Préparation du fichier...' : 'Télécharger le PDF'}
               </a>
             ) : (
-                  <Link href={`/connexion?next=/documents/${id}`} className="doc-btn-dl" style={{ display: 'flex', justifyContent: 'center' }}>
+                  <Link rel="nofollow" href={`/connexion?next=/documents/${id}`} className="doc-btn-dl" style={{ display: 'flex', justifyContent: 'center' }}>
                 Se connecter pour accéder
               </Link>
             )}

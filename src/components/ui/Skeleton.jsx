@@ -47,3 +47,26 @@ export function DocGridSkeleton({ count = 6 }) {
     </div>
   )
 }
+
+export function DomaineCardSkeleton() {
+  return <Skeleton style={{ height: 110, borderRadius: 18 }} />
+}
+
+export function ConcoursGridSkeleton({ count = 10 }) {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(150px,1fr))', gap: '.9rem' }}>
+      {Array.from({ length: count }).map((_, i) => <DomaineCardSkeleton key={i} />)}
+    </div>
+  )
+}
+
+
+export function QuizSkeleton() {
+  return (
+    <div style={{ maxWidth: 600, margin: '0 auto', padding: '3rem 1.5rem' }}>
+      <Skeleton style={{ height: 20, width: 160, marginBottom: '1.6rem' }} />
+      <Skeleton style={{ height: 90, borderRadius: 20, marginBottom: '1.4rem' }} />
+      {[1, 2, 3, 4].map(i => <Skeleton key={i} style={{ height: 56, borderRadius: 14, marginBottom: '.7rem' }} />)}
+    </div>
+  )
+}

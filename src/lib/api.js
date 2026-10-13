@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { suivreReponseApi } from '@/lib/analytics'
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
 
@@ -10,10 +12,22 @@ export const api = axios.create({
 })
 
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const message = error.response?.data?.error || 'Une erreur est survenue'
-    return Promise.reject(new Error(message))
+   (response) => {
+    suivreReponseApi(response)
+    return response
+  },
+  async (error) => {
+    let message = error.response?.data?.error || 'Une erreur est survenue'
+    // Avec responseType: 'blob', le message du serveur arrive sous forme de Blob
+    if (error.response?.data instanceof Blob) {
+      try {
+        message = JSON.parse(await error.response.data.text()).error || message
+      } catch {}
+    }
+    const erreur = new Error(message)
+    erreur.code = error.code
+    erreur.status = error.response?.status
+    return Promise.reject(erreur)
   }
 )
 

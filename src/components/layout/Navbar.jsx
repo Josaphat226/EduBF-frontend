@@ -9,6 +9,7 @@ import ThemeToggle from './ThemeToggle'
 const navLinks = [
   { href: '/', label: 'Accueil' },
   { href: '/documents', label: 'Documents' },
+  { href: '/concours', label: 'Concours' },
   { href: '/aide', label: 'Aide' },
   { href: '/contact', label: 'Contact' },
 ]
@@ -84,6 +85,10 @@ export default function Navbar() {
           )}
         </div>
 
+                <div className="nav-theme-mobile">
+          <ThemeToggle />
+        </div>
+
         <button
           className={`hamburger ${menuOpen ? 'open' : ''}`}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -96,6 +101,7 @@ export default function Navbar() {
       <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
         <Link href="/" onClick={() => setMenuOpen(false)}>Accueil</Link>
         <Link href="/documents" onClick={() => setMenuOpen(false)}>Documents</Link>
+              <Link href="/concours" onClick={() => setMenuOpen(false)}>QCM</Link>
         <Link href="/aide" onClick={() => setMenuOpen(false)}>Aide</Link>
         <Link href="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
         <div className="mobile-menu-divider" />

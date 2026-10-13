@@ -12,7 +12,9 @@ export const metadata = {
   },
   description: "EduBF — La plateforme nationale de ressources éducatives du Burkina Faso.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://edubf.bf'),
+    appleWebApp: { capable: true, title: 'EduBF', statusBarStyle: 'default' },
 }
+export const viewport = { themeColor: '#FF6B35' }
 
 export default function RootLayout({ children }) {
   return (

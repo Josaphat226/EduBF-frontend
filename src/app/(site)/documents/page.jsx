@@ -3,7 +3,9 @@ import DocumentsClient from '@/components/pages/DocumentsClient'
 
 export const metadata = {
   title: 'Tous les documents — EduBF',
-  description: 'Cours, sujets, corrigés et examens blancs pour BEPC, BAC, BEP, CAP et BTS au Burkina Faso.',
+    description: 'Cours, sujets, corrigés et examens blancs pour BEPC, BAC, BEP, CAP et BTS au Burkina Faso.',
+  alternates: { canonical: '/documents' },
+
 }
 
 export default function DocumentsPage() {
