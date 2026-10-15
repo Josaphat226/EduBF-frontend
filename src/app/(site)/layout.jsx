@@ -6,6 +6,8 @@ import Footer from '@/components/layout/Footer'
 import Analytics from '@/components/analytics/Analytics'
 import ConsentBanner from '@/components/analytics/ConsentBanner'
 import EnregistrerSW from '@/components/pwa/EnregistrerSW'
+  import PopupVote from '@/components/vote/PopupVote'
+
 
 export default function SiteLayout({ children }) {
   const pathname = usePathname()
@@ -28,6 +30,7 @@ export default function SiteLayout({ children }) {
         <Analytics />
           <EnregistrerSW />
         <ConsentBanner />
+          <PopupVote />
       </>
     )
   }
@@ -42,6 +45,7 @@ export default function SiteLayout({ children }) {
       <Analytics />
         <EnregistrerSW />
       <ConsentBanner />
+        <PopupVote />
     </>
   )
 }
