@@ -75,7 +75,7 @@ export default async function PageContenu({ params }) {
       <main className="sujet-page">
             <Link href="/exercices" className="sujet-retour">← Tous les exercices</Link>
         <EnteteContenu contenu={c} />
-                 <BoutonsTelechargement code={c.code} />
+                <BoutonsTelechargement code={c.code} pdf={c.pdf} />
         <SujetLecture code={c.code} document={document} />
         <PiedContenu contenu={c} />
       </main>
