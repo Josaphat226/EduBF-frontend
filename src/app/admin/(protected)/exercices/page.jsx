@@ -66,7 +66,7 @@ export default function AdminExercices() {
   }
 
   async function supprimer(c) {
-    if (!confirm(`Supprimer définitivement « ${c.titre} » ?`)) return
+       if (!confirm(`Supprimer définitivement « ${c.titre} » ?\n\nSes versions, ses PDF et son historique de vues seront effacés. Cette action est irréversible.`)) return
     try {
       await api.delete(`/admin/contenus/${c.id}`)
       charger()
@@ -152,7 +152,7 @@ export default function AdminExercices() {
                       {c.version_publiee && (
                         <button type="button" className="ctn-lien-action" onClick={() => basculerEnLigne(c)}>{c.actif ? 'Retirer' : 'Remettre en ligne'}</button>
                       )}
-                      {!c.version_publiee && c.actif && (
+                                          {(!c.version_publiee || !c.actif) && (
                         <button type="button" className="ctn-lien-action ctn-lien-danger" onClick={() => supprimer(c)}>Supprimer</button>
                       )}
                     </div>

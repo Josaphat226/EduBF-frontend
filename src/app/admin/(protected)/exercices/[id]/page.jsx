@@ -235,7 +235,7 @@ export default function FicheContenu() {
               ))}</tbody>
             </table>
           </div>
-          {jamaisPublie && <div style={{ marginTop: '1.25rem' }}><button type="button" className="btn-admin btn-admin-ghost ctn-lien-danger" onClick={supprimer}>Supprimer ce contenu</button></div>}
+          {(jamaisPublie || !c.actif) && <div style={{ marginTop: '1.25rem' }}><button type="button" className="btn-admin btn-admin-ghost ctn-lien-danger" onClick={supprimer}>Supprimer ce contenu</button></div>}
         </div>
       )}
     </>
