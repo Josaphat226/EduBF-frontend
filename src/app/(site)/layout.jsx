@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import Analytics from '@/components/analytics/Analytics'
+import SuiviVisites from '@/components/analytics/SuiviVisites'
 import ConsentBanner from '@/components/analytics/ConsentBanner'
 import EnregistrerSW from '@/components/pwa/EnregistrerSW'
   import PopupVote from '@/components/vote/PopupVote'
@@ -28,6 +29,7 @@ export default function SiteLayout({ children }) {
         </div>
         <Footer />
         <Analytics />
+        <SuiviVisites />
           <EnregistrerSW />
         <ConsentBanner />
           <PopupVote />
@@ -43,6 +45,7 @@ export default function SiteLayout({ children }) {
       {children}
       <Footer />
       <Analytics />
+      <SuiviVisites />
         <EnregistrerSW />
       <ConsentBanner />
         <PopupVote />

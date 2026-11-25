@@ -9,6 +9,7 @@ import ThemeToggle from './ThemeToggle'
 const navLinks = [
   { href: '/', label: 'Accueil' },
   { href: '/documents', label: 'Documents' },
+   { href: '/exercices', label: 'Exercices' },
   { href: '/concours', label: 'QCM' },
   { href: '/aide', label: 'Aide' },
   { href: '/contact', label: 'Contact' },
@@ -101,6 +102,7 @@ export default function Navbar() {
       <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
         <Link href="/" onClick={() => setMenuOpen(false)}>Accueil</Link>
         <Link href="/documents" onClick={() => setMenuOpen(false)}>Documents</Link>
+                <Link href="/exercices" onClick={() => setMenuOpen(false)}>Exercices</Link>
               <Link href="/concours" onClick={() => setMenuOpen(false)}>QCM</Link>
         <Link href="/aide" onClick={() => setMenuOpen(false)}>Aide</Link>
         <Link href="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>

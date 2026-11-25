@@ -1,0 +1,3 @@
+// Adresse officielle du site : UNE seule source pour le sitemap, robots, balises canoniques…
+// Sur Render, définis NEXT_PUBLIC_SITE_URL=https://edubf.net (sans « / » à la fin).
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://edubf.net').replace(/\/+$/, '')
