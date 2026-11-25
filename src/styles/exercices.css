@@ -1,0 +1,175 @@
+/* ============================================================
+   Page « Exercices » (liste, filtres, recherche)
+   Variables de thème uniquement : le mode sombre est automatique.
+   ============================================================ */
+
+.exo-page { max-width: 1040px; margin: 0 auto; padding: 1.75rem 1rem 4rem; color: var(--text); }
+
+.exo-entete { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
+.exo-titre { font-family: var(--font-display); font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+.exo-intro { max-width: 60ch; color: var(--text-secondary); }
+
+/* Champ « Vous avez un code ? » */
+.exo-code { max-width: 26rem; }
+.exo-code label { display: block; margin-bottom: 0.3rem; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+.exo-code-ligne { display: flex; gap: 0.5rem; }
+.exo-code input { flex: 1; min-width: 0; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--text); font-family: monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.exo-code button { padding: 0.5rem 1rem; border: 0; border-radius: 10px; background: var(--primary); color: #fff; font-weight: 700; cursor: pointer; }
+.exo-code-erreur { margin-top: 0.4rem; font-size: 0.8rem; color: #DC2626; }
+
+/* Recherche */
+.exo-recherche { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+.exo-recherche input[type="search"] { flex: 1; min-width: 0; padding: 0.7rem 1rem; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); color: var(--text); }
+.exo-recherche button { padding: 0.7rem 1.25rem; border: 0; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 700; cursor: pointer; }
+
+/* Filtres */
+.exo-filtres { display: grid; gap: 0.85rem; margin-bottom: 1.75rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-card); }
+.exo-groupe { display: grid; gap: 0.35rem; }
+.exo-groupe-titre { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.exo-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.exo-chip { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; padding: 0.3rem 0.75rem; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+.exo-chip:hover { border-color: var(--primary); color: var(--primary-text); }
+.exo-chip-actif { border-color: var(--primary); background: var(--primary); color: #fff; }
+.exo-chip-actif:hover { color: #fff; }
+.exo-chip-n { font-size: 0.72rem; font-weight: 700; opacity: 0.7; }
+
+/* Résultats */
+.exo-resume { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; }
+.exo-resume-titre { font-size: 1.05rem; font-weight: 800; }
+.exo-reinit { font-size: 0.85rem; color: var(--primary-text); text-decoration: underline; }
+
+.exo-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1rem; }
+.exo-carte { position: relative; display: flex; flex-direction: column; gap: 0.5rem; padding: 1.1rem 1.2rem; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-card); box-shadow: var(--shadow-1); transition: transform 0.15s, border-color 0.15s; }
+.exo-carte:hover { transform: translateY(-2px); border-color: var(--primary); }
+.exo-carte-type { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-hover); }
+.exo-carte-titre { font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
+.exo-carte-titre a { color: inherit; text-decoration: none; }
+.exo-carte-titre a::after { content: ''; position: absolute; inset: 0; border-radius: 14px; } /* toute la carte est cliquable */
+.exo-carte-titre a:focus-visible::after { outline: 2px solid var(--primary); outline-offset: 2px; }
+.exo-carte-pastilles { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.35rem; }
+.exo-carte-pastilles .sujet-pastille { white-space: nowrap; }
+.exo-carte-description { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.88rem; color: var(--text-secondary); }
+.exo-carte-meta { margin-top: auto; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+
+.exo-vide { display: grid; justify-items: center; gap: 0.6rem; padding: 3rem 1rem; border: 1px dashed var(--border); border-radius: 14px; text-align: center; color: var(--text-secondary); }
+.exo-bouton { display: inline-block; margin-top: 0.4rem; padding: 0.6rem 1.2rem; border-radius: 10px; background: var(--primary); color: #fff; font-weight: 700; text-decoration: none; }
+
+.exo-pagination { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.75rem; font-size: 0.9rem; color: var(--text-secondary); }
+.exo-pagination a { padding: 0.45rem 0.9rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--primary-text); font-weight: 700; text-decoration: none; }
+.exo-pagination a:hover { border-color: var(--primary); }
+
+@media (max-width: 560px) {
+  .exo-recherche { flex-direction: column; }
+  .exo-filtres { padding: 0.85rem; }
+}
+
+
+/* Filtres actifs (pastilles retirables) */
+.exo-actifs { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 1.25rem; }
+.exo-pastille { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.7rem; border: 1px solid var(--primary); border-radius: 999px; background: var(--bg-card); color: var(--primary-text); font-size: 0.82rem; font-weight: 700; text-decoration: none; }
+.exo-pastille:hover { background: var(--primary); color: #fff; }
+.exo-tout-effacer { margin-left: 0.25rem; font-size: 0.82rem; color: var(--text-secondary); text-decoration: underline; }
+
+/* « Voir les autres » (liste repliable sans JavaScript) */
+.exo-plus { flex-basis: 100%; }
+.exo-plus > summary { display: inline-flex; align-items: center; padding: 0.3rem 0.75rem; border: 1px dashed var(--border); border-radius: 999px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; cursor: pointer; list-style: none; }
+.exo-plus > summary::-webkit-details-marker { display: none; }
+.exo-plus > summary:hover { border-color: var(--primary); color: var(--primary-text); }
+.exo-plus[open] > summary { margin-bottom: 0.4rem; }
+.exo-plus-liste { flex-basis: 100%; }
+
+/* Tri */
+.exo-tri { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--text-muted); }
+.exo-tri-lien { padding: 0.2rem 0.6rem; border-radius: 8px; color: var(--text-secondary); font-weight: 600; text-decoration: none; }
+.exo-tri-lien:hover { color: var(--primary-text); }
+.exo-tri-actif { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+
+@media (max-width: 560px) {
+  .exo-resume { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   Page « Exercices » (liste, filtres, recherche)
+   Variables de thème uniquement : le mode sombre est automatique.
+   ============================================================ */
+
+/* Couleurs EduBF : ambre (comme la page Documents), jamais le bleu */
+.exo-page { --exo-accent: #F59E0B; --exo-accent-text: #B45309; --exo-on-accent: #1a1a2e; max-width: 1040px; margin: 0 auto; padding: 1.75rem 1rem 4rem; color: var(--text); }
+[data-theme="dark"] .exo-page { --exo-accent-text: #FBBF24; }
+
+.exo-entete { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
+.exo-intro { max-width: 60ch; color: var(--text-secondary); }
+
+/* Champ « Vous avez un code ? » */
+.exo-code { max-width: 26rem; }
+.exo-code label { display: block; margin-bottom: 0.3rem; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+.exo-code-ligne { display: flex; gap: 0.5rem; }
+.exo-code input { flex: 1; min-width: 0; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--text); font-family: monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.exo-code button { padding: 0.5rem 1rem; border: 0; border-radius: 10px; background: var(--exo-accent); color: var(--exo-on-accent); font-weight: 700; cursor: pointer; }
+.exo-code-erreur { margin-top: 0.4rem; font-size: 0.8rem; color: #DC2626; }
+
+/* Filtres */
+.exo-filtres { display: grid; gap: 0.85rem; margin-bottom: 1.75rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-card); }
+.exo-groupe { display: grid; gap: 0.35rem; }
+.exo-groupe-titre { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.exo-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.exo-chip { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; padding: 0.3rem 0.75rem; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+.exo-chip:hover { border-color: var(--exo-accent); color: var(--exo-accent-text); }
+.exo-chip-actif { border-color: var(--exo-accent); background: var(--exo-accent); color: var(--exo-on-accent); }
+.exo-chip-actif:hover { color: var(--exo-on-accent); }
+.exo-chip-n { font-size: 0.72rem; font-weight: 700; opacity: 0.7; }
+
+/* Filtres actifs (pastilles retirables) */
+.exo-actifs { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 1.25rem; }
+.exo-pastille { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.7rem; border: 1px solid var(--exo-accent); border-radius: 999px; background: var(--bg-card); color: var(--exo-accent-text); font-size: 0.82rem; font-weight: 700; text-decoration: none; }
+.exo-pastille:hover { background: var(--exo-accent); color: var(--exo-on-accent); }
+.exo-tout-effacer { margin-left: 0.25rem; font-size: 0.82rem; color: var(--text-secondary); text-decoration: underline; }
+
+/* « Voir les autres » (liste repliable sans JavaScript) */
+.exo-plus { flex-basis: 100%; }
+.exo-plus > summary { display: inline-flex; align-items: center; padding: 0.3rem 0.75rem; border: 1px dashed var(--border); border-radius: 999px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; cursor: pointer; list-style: none; }
+.exo-plus > summary::-webkit-details-marker { display: none; }
+.exo-plus > summary:hover { border-color: var(--exo-accent); color: var(--exo-accent-text); }
+.exo-plus[open] > summary { margin-bottom: 0.4rem; }
+.exo-plus-liste { flex-basis: 100%; }
+
+/* Résultats */
+.exo-resume { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; }
+.exo-resume-titre { font-size: 1.05rem; font-weight: 800; }
+
+/* Tri */
+.exo-tri { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--text-muted); }
+.exo-tri-lien { padding: 0.2rem 0.6rem; border-radius: 8px; color: var(--text-secondary); font-weight: 600; text-decoration: none; }
+.exo-tri-lien:hover { color: var(--exo-accent-text); }
+.exo-tri-actif { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+
+.exo-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1rem; }
+.exo-carte { position: relative; display: flex; flex-direction: column; gap: 0.5rem; padding: 1.1rem 1.2rem; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-card); box-shadow: var(--shadow-1); transition: transform 0.15s, border-color 0.15s; }
+.exo-carte:hover { transform: translateY(-2px); border-color: var(--exo-accent); }
+.exo-carte-type { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-hover); }
+.exo-carte-titre { font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
+.exo-carte-titre a { color: inherit; text-decoration: none; }
+.exo-carte-titre a::after { content: ''; position: absolute; inset: 0; border-radius: 14px; } /* toute la carte est cliquable */
+.exo-carte-titre a:focus-visible::after { outline: 2px solid var(--exo-accent); outline-offset: 2px; }
+.exo-carte-pastilles { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.35rem; }
+.exo-carte-pastilles .sujet-pastille { white-space: nowrap; }
+.exo-carte-description { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.88rem; color: var(--text-secondary); }
+.exo-carte-meta { margin-top: auto; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+
+.exo-vide { display: grid; justify-items: center; gap: 0.6rem; padding: 3rem 1rem; border: 1px dashed var(--border); border-radius: 14px; text-align: center; color: var(--text-secondary); }
+.exo-bouton { display: inline-block; margin-top: 0.4rem; padding: 0.6rem 1.2rem; border-radius: 10px; background: var(--exo-accent); color: var(--exo-on-accent); font-weight: 700; text-decoration: none; }
+
+.exo-pagination { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.75rem; font-size: 0.9rem; color: var(--text-secondary); }
+.exo-pagination a { padding: 0.45rem 0.9rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--exo-accent-text); font-weight: 700; text-decoration: none; }
+.exo-pagination a:hover { border-color: var(--exo-accent); }
+
+@media (max-width: 560px) {
+  .exo-filtres { padding: 0.85rem; }
+  .exo-resume { flex-direction: column; align-items: flex-start; }
+}
+
+/* Filtres pliables sur mobile (même bouton que la page Documents) */
+@media (max-width: 750px) {
+  .exo-filtres-zone { display: none; }
+  .exo-filtres-zone.exo-filtres-ouverts { display: block; animation: docs-filtres-ouvrir .22s ease-out; }
+}

@@ -6,17 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@next/third-parties": "^16.4.0",
+    "@tiptap/core": "^3.34.0",
+    "@tiptap/extension-subscript": "^3.34.0",
+    "@tiptap/extension-superscript": "^3.34.0",
+    "@tiptap/extension-table": "^3.34.0",
+    "@tiptap/pm": "^3.34.0",
+    "@tiptap/react": "^3.34.0",
+    "@tiptap/starter-kit": "^3.34.0",
     "axios": "^1.18.1",
     "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.2",
+    "katex": "^0.19.1",
     "lucide-react": "^1.31.0",
     "next": "16.2.11",
+    "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.4",
@@ -27,6 +37,8 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.2.11",
-    "tailwindcss": "^4"
+    "jsdom": "^31.0.1",
+    "tailwindcss": "^4",
+    "vitest": "^4.1.10"
   }
 }

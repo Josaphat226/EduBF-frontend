@@ -27,6 +27,7 @@ api.interceptors.response.use(
     const erreur = new Error(message)
     erreur.code = error.code
     erreur.status = error.response?.status
+        erreur.donnees = error.response?.data
     return Promise.reject(erreur)
   }
 )
