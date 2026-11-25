@@ -33,7 +33,7 @@ export default function BoutonsTelechargement({ code, pdf }) {
 
   useEffect(() => {
     if (etat !== 'preparation') return
-    const t = setTimeout(() => { setEtat('erreur'); setImpression(null) }, 20000)
+    const t = setTimeout(() => { setEtat('erreur'); setImpression(null) }, 30000)
     return () => clearTimeout(t)
   }, [etat])
 
@@ -61,7 +61,15 @@ export default function BoutonsTelechargement({ code, pdf }) {
     if (!fenetre || !doc || !impression || !doc.querySelector('.imp-page')) return
     try {
       if (impression.corrige) doc.querySelectorAll('details.sujet-corrige').forEach((d) => { d.open = true })
-      if (doc.fonts && doc.fonts.ready) await doc.fonts.ready
+            // Les images sont chargées « à la demande » : on force leur chargement avant d'imprimer
+      const imgs = Array.from(doc.images)
+      imgs.forEach((i) => { i.loading = 'eager' })
+      await Promise.all(imgs.map((i) => ((i.complete && i.naturalWidth > 0) ? null : new Promise((ok) => {
+        i.addEventListener('load', ok)
+        i.addEventListener('error', ok)
+        setTimeout(ok, 15000)
+      }))))
+        if (doc.fonts && doc.fonts.ready) await doc.fonts.ready
       await new Promise((r) => setTimeout(r, 500))
 
       const titreAvant = document.title
